@@ -14,15 +14,15 @@
 <body>
  
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    First Name:  <input type="text" name="firstname"/>
+    First Name:  <input type="text" name="firstname" autocomplete="off"/>
 	<br><br>
-    Last Name:  <input type="text" name="lastname"/>
+    Last Name:  <input type="text" name="lastname" autocomplete="off"/>
 	<br><br>
-    User ID:  <input type="text" name="userid"/>
+    User ID:  <input type="text" name="userid" autocomplete="off"/>
 	<br><br>
-    Password: <input type="password" name="password1"/>
+    Password: <input type="password" name="password1" autocomplete="off"/>
     <br><br>
-    Retype Password: <input type="password" name="password2"/>
+    Retype Password: <input type="password" name="password2" autocomplete="off"/>
     <br><br>
     <input type="submit" value="Create User"/>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="reset" value="Clear"/>

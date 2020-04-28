@@ -54,8 +54,7 @@
         $_SESSION["fullname"] = $row["first_name"] . " " . $row["last_name"];
         if($row["usertype"]=="reader")
         {
-		  echo "<br>Reader Menu</br>";
-        
+		    header("Location: readermenu.php");
 		// write menu with links here
         }
         else

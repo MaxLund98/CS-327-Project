@@ -11,10 +11,11 @@
     </style>
 </head>
 <body>
+<h1>Welcome to the Marburg Public Library</h1>
 <form method="post" action="welcome.php">
-    User ID:  <input type="text" name="userid"/>
+    User ID:  <input type="text" name="userid" autocomplete="off"/>
 	<br><br>
-    Password: <input type="password" name="password"/>
+    Password: <input type="password" name="password" autocomplete="off"/>
     <br><br>
     <input type="submit" value="Login"/>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="reset" value="Clear"/>
