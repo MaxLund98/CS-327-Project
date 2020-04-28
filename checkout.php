@@ -6,6 +6,7 @@
 	</head>
 	<body>
 		<?php
+			include 'utility.php';
 			session_start();
 			$docid = $_GET["document_pk"];
 			$title = $_GET["title"];

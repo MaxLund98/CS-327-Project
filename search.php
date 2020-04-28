@@ -38,9 +38,9 @@
 
 			$sql = 
 				"select document_pk, publisher, borrower, title"
-			.	"from document ";
-			.	"where document_pk = '$docid' ";
-			.	"or title = '$title' ";
+			.	" from document "
+			.	"where document_pk = '$docid' "
+			.	"or title = '$title' "
 			.	"or publisher = '$publisher'";
 			
 			$result = $conn->query($sql);
@@ -65,7 +65,7 @@
 						<!-- <input type='hidden' name='var' value='<?php echo "$var"; ?>' /> -->
 					</form>
 		<?php
-				}else if(borrower == $_SESSION["uname"]){
+				}else if($borrower == $_SESSION["uname"]){
 		?>
 						<form method="post" action="return.php?document_pk=<?php echo "$docid"; ?>&title=<?php echo "$title"; ?>">
 							<input type="submit" value="Return" />&nbsp;&nbsp;&nbsp;&nbsp;

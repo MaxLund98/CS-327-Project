@@ -43,7 +43,7 @@
 			$result = $conn->query($sql2);
 			echo 
 				$sql2, "<br>",
-				<a href='index.php'>Login</a>";
+				"<a href='index.php'>Login</a>";
 			$conn->close();
 		?>
 </body>

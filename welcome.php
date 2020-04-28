@@ -9,7 +9,7 @@
 			include 'utility.php';
 			$conn = getSQLConnection();
 			$userid = getFromPOST("userid");
-			$password = getFromPOST("password"]);
+			$password = getFromPOST("password");
 			//Create the SQL query
 			$sql =
 				"select first_name, last_name, reader_pk, usertype from reader" .
