@@ -15,7 +15,6 @@
 			<input type="reset" value="Clear"/><br><br>
 			Already have an account? Sign in <a href="index.php">here</a>.
 		</form>
-
 		<?php
 			include "utility.php";
 			$conn = getSQLConnection();
