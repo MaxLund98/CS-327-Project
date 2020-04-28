@@ -37,8 +37,8 @@
 			$publisher = getFromGET("publisher");
 
 			$sql = 
-				"select document_pk, publisher, borrower, title"
-			.	" from document "
+				"select document_pk, publisher, borrower, title "
+			.	"from document "
 			.	"where document_pk = '$docid' "
 			.	"or title = '$title' "
 			.	"or publisher = '$publisher'";
