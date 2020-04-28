@@ -7,10 +7,11 @@
 	<body>
 		<?php
 			session_start();
-			if(isset($_SESSION["uname"]) && $_SESSION["uname"]!=""){
-				echo $_SESSION["fullname"] . " logged out successfully.";
+			include 'utility.php';
+			if(validateFromSession("uname")){
+				echo $_SESSION["fullname"], " logged out successfully.";
 				session_destroy();
-			}        
+			}
 		?>
 	</body>
 </html>
