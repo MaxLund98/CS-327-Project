@@ -10,33 +10,42 @@
 			$conn = getSQLConnection();
 			$userid = getFromPOST("userid");
 			$password = getFromPOST("password");
-			//Create the SQL query
-			$sql =
-				"select first_name, last_name, reader_pk, usertype from reader" .
-				" where reader_pk = '$userid'" .
-				" and password = '$password'";
-			//Run the query
-			$result = $conn->query($sql);
-			if($result->num_rows == 0){
-				echo "<h2>Sorry! Wrong username / password!</h2>";
-				echo "<br><a href='index.php'>Try again</a>";
-				return;
+			#Check if user is Librarian
+			$result = $conn->query(
+				"select first_name, last_name, librarian_pk from librarian "
+			.	"where librarian_pk = '$userid' "
+			.	"and password = '$password'");
+			if($result->num_rows > 0){
+				$conn->close();
+				$row = $result->fetch_assoc();
+				session_start();
+				$_SESSION["uname"] = $userid;
+				$_SESSION["fullname"] = $row["first_name"] . " " . $row["last_name"];
+				$_SESSION["usertype"] = "librarian";
+				
+				header("Location: librarianmenu.php");
+				exit();
 			}
-			$row = $result->fetch_assoc();
-			//Set Session Variables
-			session_start();
-			$_SESSION["uname"] = $row["reader_pk"];
-			$_SESSION["fullname"] = $row["first_name"] . " " . $row["last_name"];
-			$usertype = $row["usertype"];
-			echo "<h2>Welcome ", $_SESSION["fullname"];
-			if($usertype == "reader"){
+			#Check if user is reader
+			$result = $conn->query(
+				"select first_name, last_name, reader_pk, usertype from reader"
+			.	" where reader_pk = '$userid'"
+			.	" and password = '$password'");
+			if($result->num_rows > 0){
+				$conn->close();
+				$row = $result->fetch_assoc();
+				
+				session_start();
+				$_SESSION["uname"] = $userid;
+				$_SESSION["fullname"] = $row["first_name"] . " " . $row["last_name"];
+				$_SESSION["usertype"] = "reader";
+				
 				header("Location: readermenu.php");
-				// write menu with links here
-			}else if($usertype == "librarian"){
-				echo "<br>Librarian Menu</br>";
-				// write menu with links here
+				exit();
 			}
-			$conn->close();
+			echo "<h2>Sorry! Wrong username / password!</h2>";
+			echo "<br><a href='index.php'>Try again</a>";
+			exit();
 		?>
 		<br>
 		<a href="logout.php">Sign Out</a>

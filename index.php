@@ -7,10 +7,11 @@
 	<body>
 		<h1>Welcome to the Marburg Public Library</h1>
 		<form method="post" action="welcome.php" autocomplete="off">
-			User ID:  <input type="text" name="userid"/><br><br>
-			Password: <input type="password" name="password"/><br><br>
-			<input type="submit" value="Login"/>&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="reset" value="Clear"/><br><br>
+			<table>
+				<tr> <td>User ID:</td> <td colspan="2"><input type="text" name="userid"/></td> </tr>
+				<tr> <td>Password:</td> <td colspan="2"><input type="text" name="password"/></td> </tr>
+				<tr> <td></td> <td><input type="submit" value="Login" name="login"/></td> <td><input type="reset" value="Clear"/></td> </tr>
+			<table>
 			Don't have an account? Sign up <a href="signup.php">here</a>
 		</form>
 	</body>

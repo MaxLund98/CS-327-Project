@@ -6,19 +6,18 @@
 	</head>
 	<body>
 		<?php
-			include 'utility.php';
 			session_start();
-			$docid = $_GET["document_pk"];
-			$title = $_GET["title"];
-			echo "Checking out ", $title, "...";
-			
+			include 'utility.php';
+			waitForSubmission("checkout","post");
+			$uname = validateReader();
 			$conn = getSQLConnection();
-			//Create the SQL query
-			$uname = $_SESSION["uname"];
+			$docid = getFromPOST("docid");
+			$docnum = getFromPOST("docnum");
+			$title = getFromPOST("title");
+			echo "Checking out ", $title, "...";
 			$sql = 
-				"update document "
-			.	"set borrower='$uname' "
-			.	"where document_pk = '$docid'";
+				"insert into loan(borrower,borrowed_doc,borrow_date) "
+			.	"values('$uname','$docid',CURDATE())";
 			echo $sql;
 			
 			if($conn->query($sql)){

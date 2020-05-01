@@ -7,24 +7,28 @@
 	<body>
 		<?php
 			session_start();
-			$docid = $_GET["document_pk"];
-			$title = $_GET["title"];
-			echo "Returning $title...";
 			include 'utility.php';
+			waitForSubmission("return","post");
+			$uname = validateReader();
 			$conn = GetSQLConnection();
-			//Create the SQL query
-			$uname = $_SESSION["uname"];
-			$sql = 
-				"update document "
-			. "set borrower = NULL "
-			. "where document_pk = '$docid'";
-			echo $sql;
-
+			
+			$docid = $_POST["docid"];
+			$docnum = $_POST["docnum"];
+			$title = $_POST["title"];
+			echo "Returning $title...";
+			
+			$result = $conn->query(
+				"update loan "
+			.	"set return_date = CURDATE() "
+			.	"where borrower = '$uname' "
+			.	"and docid = $docid "
+			.	"and docnum = $docnum "
+			.	"and return_date is NULL");
 			//Run the query
-			if($conn->query($sql)){
+			if($result != false){
 					header("Location: search.php?docid=$docid");
 			}else{
-					echo "Failed to checkout.";
+					echo "Failed to return.";
 			}
 		?>
 	</body>

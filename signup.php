@@ -6,36 +6,44 @@
 	</head>
 	<body>
 		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" autocomplete="off">
-			First Name:	<input type="text" name="firstname"/><br><br>
-			Last Name:	<input type="text" name="lastname"/><br><br>
-			User ID:	<input type="text" name="userid"/><br><br>
-			Password:	<input type="password" name="password1"/><br><br>
-			Retype Password:	<input type="password" name="password2"/><br><br>
-			<input type="submit" value="Create User"/>&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="reset" value="Clear"/><br><br>
-			Already have an account? Sign in <a href="index.php">here</a>.
+			<table>
+				<tr> <td>First Name</td>	<td><input type="text" name="firstname"/></td> </tr>
+				<tr> <td>Last Name</td>	<td><input type="text" name="lastname"/></td> </tr>
+				<tr> <td>User ID</td>	<td><input type="text" name="userid"/></td> </tr>
+				<tr> <td>Password</td>	<td><input type="text" name="passsword1"/></td> </tr>
+				<tr> <td>Retype Password</td>	<td><input type="text" name="password2"/></td> </tr>
+				<input type="submit" value="Create User", name="create user"/>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="reset" value="Clear"/><br><br>
+				Already have an account? Sign in <a href="index.php">here</a>.
+			</table>
 		</form>
+
 		<?php
 			include "utility.php";
-			$conn = getSQLConnection();
+			waitForSubmission("create user", "post");
+			
+			
 			$fname = getFromPOST("firstname");
 			$lname = getFromPOST("lastname");
 			$userid = getFromPOST("userid");
 			$password = getFromPOST("password1");
+			$password_retype = getFromPOST("password2");
 			if($userid==""){
-				$conn->close();
-				return;
+				echo "Invalid User ID!";
+				exit();
+			}
+			if($password != $password_retype){
+				echo "Passwords do not match!";
+				exit();
 			}
 			//Create the SQL query
-			$sql = 
-				"select reader_pk from reader" .
-				" where reader_pk = '$userid'";
-			$result = $conn->query($sql);
-			if($result->num_rows == 0){
-				echo 
-					"Sorry! That userid already exists!<br>",
-					"<a href='signup.php'>Try again</a>";
-				return;
+			$conn = getSQLConnection();
+			$result = $conn->query(
+				"select reader_pk from reader"
+			.	" where reader_pk = '$userid'");
+			if($result->num_rows > 0){
+				echo "Sorry! That userid already exists!";
+				exit();
 			}
 			$sql2 = 
 				"insert into reader(first_name,last_name,reader_pk,password)" .
@@ -46,6 +54,5 @@
 				"<a href='index.php'>Login</a>";
 			$conn->close();
 		?>
-</body>
+	</body>
 </html>
-
