@@ -1,0 +1,92 @@
+SET sql_mode = 'ORACLE';
+/*Ensures integrity of SQL across multiple versions of phpMyAdmin*/
+
+CREATE TABLE librarian (
+librarian_pk	VARCHAR(50) NOT NULL PRIMARY KEY,
+first_name	VARCHAR(20),
+last_name	VARCHAR(20),
+password	VARCHAR(50)
+);
+
+CREATE TABLE reader (
+reader_pk	VARCHAR(50) NOT NULL PRIMARY KEY,
+first_name	VARCHAR(20),
+last_name	VARCHAR(20),
+withdraw_count	INT NOT NULL DEFAULT 0,
+total_fees	INT NOT NULL DEFAULT 0,
+password	VARCHAR(50),
+usertype	VARCHAR(50) NOT NULL DEFAULT 'reader'
+);
+
+CREATE TABLE publisher (
+publisher_pk	VARCHAR(50) NOT NULL PRIMARY KEY,
+name		VARCHAR(50)
+);
+CREATE TABLE document (
+document_pk	INT PRIMARY KEY,
+publisher	VARCHAR(50) NOT NULL REFERENCES publisher(publisher_pk),
+title		VARCHAR(50)
+);
+
+CREATE TABLE document_copy (
+base_document	INT NOT NULL REFERENCES document(document_pk), 
+copy_number		INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE loan (
+loan_pk		INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+borrower	VARCHAR(50) NOT NULL REFERENCES reader(reader_pk),
+doc_id		INT NOT NULL REFERENCES document(document_pk),
+borrow_date	DATE NOT NULL,
+return_date	DATE
+);
+
+CREATE TABLE book (
+book_pk		INT NOT NULL PRIMARY KEY,
+FOREIGN KEY (book_pk) REFERENCES document(document_pk) ON DELETE CASCADE
+);
+CREATE TABLE author (
+author_pk	INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+first_name	VARCHAR(20),
+last_name	VARCHAR(20)
+);
+CREATE TABLE book_author_credit (
+document_fk	INT REFERENCES document(document_pk) ON DELETE CASCADE,
+author_fk	INT REFERENCES author(author_pk) ON DELETE CASCADE,
+PRIMARY KEY (document_fk, author_fk)
+);
+
+CREATE TABLE journal (
+journal_pk	INT NOT NULL PRIMARY KEY,
+FOREIGN KEY (journal_pk) REFERENCES document(document_pk) ON DELETE CASCADE
+);
+CREATE TABLE journal_volume (
+journal_fk	INT NOT NULL REFERENCES journal(journal_pk) ON DELETE CASCADE,
+volume_title	VARCHAR(50) NOT NULL,
+PRIMARY KEY (journal_fk, volume_title)
+);
+CREATE TABLE editor (
+editor_pk	INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+first_name	VARCHAR(20),
+last_name	VARCHAR(20)
+);
+CREATE TABLE journal_editor_credit (
+journal_fk	INT NOT NULL REFERENCES journal(journal_pk) ON DELETE CASCADE,
+editor_fk	INT NOT NULL REFERENCES editor(editor_pk) ON DELETE CASCADE,
+PRIMARY KEY (journal_fk, editor_fk)
+);
+
+CREATE TABLE dvd (
+dvd_pk		INT NOT NULL PRIMARY KEY,
+FOREIGN KEY (dvd_pk) REFERENCES document(document_pk) ON DELETE CASCADE
+);
+CREATE TABLE director (
+director_pk	INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+first_name	VARCHAR(20) NOT NULL,
+last_name	VARCHAR(20) NOT NULL
+);
+CREATE TABLE dvd_director_credit (
+dvd_fk		INT NOT NULL REFERENCES dvd(dvd_pk) ON DELETE CASCADE,
+director_fk	INT NOT NULL REFERENCES director(director_pk) ON DELETE CASCADE,
+PRIMARY KEY (dvd_fk, director_fk)
+);
