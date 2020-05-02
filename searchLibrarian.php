@@ -77,19 +77,9 @@
             echo "Document ID: " . $row["document_pk"] . "<br>";
             echo "Publisher: " . $row["publisher"] . "<br>";
             if ($row["borrower"] == NULL) {
-                echo "This document is available.<br>";
-        ?>
-                <form method="post" action="checkout.php?document_pk=<?php echo "$docid"; ?>&title=<?php echo "$title"; ?>">
-                    <input type="submit" value="Checkout" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <!-- <input type='hidden' name='var' value='<?php echo "$var"; ?>' /> -->
-                </form>
-    <?php } else {
-        if ($row["borrower"] == $_SESSION["uname"]) { ?>
-            <form method="post" action="return.php?document_pk=<?php echo "$docid"; ?>&title=<?php echo "$title"; ?>">
-                    <input type="submit" value="Return" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <!-- <input type='hidden' name='var' value='<?php echo "$var"; ?>' /> -->
-                </form>
-            <?php }
+                echo "This document is available.<br>"; 
+            } 
+            else {
                 echo "This document is currently checked out.<br>";
             }
         }
