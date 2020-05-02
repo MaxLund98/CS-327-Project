@@ -12,15 +12,13 @@
 			$conn = getSQLConnection();
 			
 			$result = $conn->query(
-				"SELECT first_name, last_name, checkout_count"
-			.	"FROM reader, "
-			.		"(SELECT borrower, count(*) checkout_count"
-			.		"FROM loans"
-			.		"GROUP BY borrower"
-			.		"ORDER BY count(*) DESC"
-			.		"LIMIT 10)"
-			.	"WHERE reader.reader_pk = borrower");
-			if($result == False){
+				"select first_name, last_name, count(*) checkout_count "
+			.	"from reader, loan "
+			.	"where reader_pk = borrower "
+			.	"group by reader_pk "
+			.	"order by count(*) DESC "
+			.	"limit 10");
+			if($result == False || $result == NULL || $result->num_rows == 0){
 				echo "No results!";
 				exit();
 			}
@@ -29,7 +27,7 @@
 				$fname = $row["first_name"];
 				$lname = $row["last_name"];
 				$checkouts = $row["checkout_count"];
-				echo "<tr> <td><b>$fname $lname</b></td> <td>$checkout_count</td> </tr>";
+				echo "<tr> <td><b>$fname $lname</b></td> <td>$checkouts</td> </tr>";
 			}
 			echo "</table>";
 			

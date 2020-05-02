@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Search for Documents</title>
+		<title>Top 10 Documents</title>
 		<link rel="stylesheet" type="text/css" href="styles.css">
 	</head>
 	<body>
@@ -10,25 +10,24 @@
 			include 'utility.php';
 			validateLibrarian();
 			$conn = getSQLConnection();
+			
 			$result = $conn->query(
-				"SELECT title, checkout_count "
-			.	"FROM document, "
-			.		"(SELECT borrowed_doc, count(*) checkout_count "
-			.		"FROM loans "
-			.		"GROUP BY borrowed_doc "
-			.		"ORDER BY count(*) DESC "
-			.		"LIMIT 10) "
-			.	"WHERE document_pk = borrowed_doc ");
-			if($result == False){
+				"select title, count(*) checkout_count "
+			.	"from document, document_copy, loan "
+			.	"where document_pk = base_document "
+			.	"and doc_copy = copy_number "
+			.	"group by document_pk "
+			.	"order by count(*) DESC "
+			.	"limit 10");
+			if($result == False || $result == NULL || $result->num_rows == 0){
 				echo "No results!";
 				exit();
 			}
-			echo "<table> <tr> <th>Reader Name</th> <th>Number of checkouts</th> </tr>";
+			echo "<table> <tr> <th>Document Title</th> <th>Number of checkouts</th> </tr>";
 			while ($row = $result->fetch_assoc()) {
-				$fname = $row["first_name"];
-				$lname = $row["last_name"];
+				$title = $row["title"];
 				$checkouts = $row["checkout_count"];
-				echo "<tr> <td><b>$fname $lname</b></td> <td>$checkout_count</td> </tr>";
+				echo "<tr> <td><b>$title</b></td> <td>$checkouts</td> </tr>";
 			}
 			echo "</table>";
 			

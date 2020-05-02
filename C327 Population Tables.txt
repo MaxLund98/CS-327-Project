@@ -1,0 +1,21 @@
+INSERT INTO document(document_pk, publisher, title) values(1, 'Bollinger', 'Lord of the Rings');
+INSERT INTO document(document_pk, publisher, title) values(2, 'Bollinger', 'Romeo and Juliet');
+INSERT INTO document(document_pk, publisher, title) values(3, 'Bollinger', 'The Great Gatsby');
+INSERT INTO document(document_pk, publisher, title) values(4, 'Follett', 'Catcher in the Rye');
+INSERT INTO document(document_pk, publisher, title) values(5, 'Follett', 'Intro to Python');
+INSERT INTO document(document_pk, publisher, title) values(6, 'Follett', 'A Song of Ice and Fire');
+INSERT INTO document(document_pk, publisher, title) values(7, 'Smith', 'Curious George');
+INSERT INTO document(document_pk, publisher, title) values(8, 'Smith', 'Star Wars');
+INSERT INTO document(document_pk, publisher, title) values(9, 'Smith', 'Jurassic Park');
+INSERT INTO document(document_pk, publisher, title) values(10, 'Smith', 'Cracking the Coding Interview');
+
+INSERT INTO document_copy(base_document, copy_number) values(1,1);
+INSERT INTO document_copy(base_document, copy_number) values(2,2);
+INSERT INTO document_copy(base_document, copy_number) values(3,3);
+INSERT INTO document_copy(base_document, copy_number) values(4,4);
+INSERT INTO document_copy(base_document, copy_number) values(5,5);
+INSERT INTO document_copy(base_document, copy_number) values(6,6);
+INSERT INTO document_copy(base_document, copy_number) values(7,7);
+INSERT INTO document_copy(base_document, copy_number) values(8,8);
+INSERT INTO document_copy(base_document, copy_number) values(9,9);
+INSERT INTO document_copy(base_document, copy_number) values(10,10);

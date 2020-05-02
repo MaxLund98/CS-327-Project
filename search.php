@@ -1,103 +1,103 @@
 <!DOCTYPE html>
-
 <html>
-
-<head>
-    <title>Search for Documents</title>
-    <style>
-        table,
-        th,
-        td,
-        tr {
-            border: solid black;
-            border-collapse: collapse
-        }
-    </style>
-</head>
-
-<body>
-    <?php
-    session_start();
-    if (isset($_SESSION["uname"]) && $_SESSION["uname"] != "") {
-        echo $_SESSION["fullname"];
-        echo "<br>";
-        echo "<a href='readermenu.php'>Return Home🏠</a>";
-    ?>
-        <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            Document ID: <input type="text" name="docid" autocomplete="off" />
-            <br><br>
-            Title: <input type="text" name="title" />
-            <br><br>
-            Publisher: <input type="text" name="publisher" />
-            <br><br>
-            <input type="submit" value="Search" />&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="reset" value="Clear" />
-            <br><br>
-        </form>
-
-        <?php
-    } else {
-        echo "You are not supposed to be here!<br>";
-        echo "<a href='index.php'>Login</a> to continue.";
-    }
-
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "aaaaaaaaaaaaaaaaaaaaaaaa";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    $sql = "";
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    } else {
-        //echo "Connected successfully<br>";
-
-        $docid = isset($_GET["docid"]) ? $_GET["docid"] : "";
-        $title = isset($_GET["title"]) ? $_GET["title"] : "";
-        $publisher = isset($_GET["publisher"]) ? $_GET["publisher"] : "";
-
-        //Create the SQL query
-        $sql = "select document_pk, publisher, borrower, title from document";
-        $sql = $sql . " where document_pk = '$docid'";
-        $sql = $sql . " or title = '$title'";
-        $sql = $sql . " or publisher = '$publisher'";
-    }
-
-    //Run the query
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<b>" . $row["title"] . "</b><br>";
-            $title = $row["title"];
-            $docid = $row["document_pk"];
-            echo "Document ID: " . $row["document_pk"] . "<br>";
-            echo "Publisher: " . $row["publisher"] . "<br>";
-            if ($row["borrower"] == NULL) {
-                echo "This document is available.<br>";
-        ?>
-                <form method="post" action="checkout.php?document_pk=<?php echo "$docid"; ?>&title=<?php echo "$title"; ?>">
-                    <input type="submit" value="Checkout" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <!-- <input type='hidden' name='var' value='<?php echo "$var"; ?>' /> -->
-                </form>
-    <?php } else {
-        if ($row["borrower"] == $_SESSION["uname"]) { ?>
-            <form method="post" action="return.php?document_pk=<?php echo "$docid"; ?>&title=<?php echo "$title"; ?>">
-                    <input type="submit" value="Return" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <!-- <input type='hidden' name='var' value='<?php echo "$var"; ?>' /> -->
-                </form>
-            <?php }
-                echo "This document is currently checked out.<br>";
-            }
-        }
-    } else {
-        echo "<h2>Sorry! No results found</h2>";
-    }
-
-    ?>
-</body>
-
+	<head>
+		<title>Search for Documents</title>
+		<link rel="stylesheet" type="text/css" href="styles.css">
+	</head>
+	<body>
+		<?php
+			session_start();
+			include 'utility.php';
+			$uname = validateReader();
+			
+		?>
+			<form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" autocomplete="off">
+				<table>
+					<tr> <td>Document ID:</td> <td colspan="2"><input type="text" name="docid" /></td> </tr>
+					<tr> <td>Title:</td> <td colspan="2"><input type="text" name="title" /></td> </tr>
+					<tr> <td>Publisher:</td> <td colspan="2"><input type="text" name="publisher" /></td> </tr>
+					<tr> <td></td> <td><input type="submit" value="Search" id="search"/></td> <td><input type="reset" value="Clear" /></td> </tr>
+				</table>
+			</form>
+		<?php
+			#waitForSubmission("search","get");
+			$docid = intval(getFromGET("docid"));
+			$title = getFromGET("title");
+			$publisher = getFromGET("publisher");
+			if("$docid"."$title"."$publisher" == ""){
+				exit();
+			}
+			
+			$conn = getSQLConnection();
+			#$result = $conn->query(
+			$sql =	"select document_pk, publisher, title "
+			. "from document "
+			.	"where document_pk = $docid "
+			.	"or title = '$title' "
+			.	"or publisher = '$publisher'";
+			$result = $conn->query($sql);
+			if($result == False || $result == NULL || $result->num_rows == 0){
+				$conn->close();
+				echo "<h2>Sorry! No results found</h2>";
+				exit();
+			}
+			echo "<table><tr> <th>Title</th> <th>Document ID</th> <th>Publisher</th> <th>Status</th> <th></th> </tr>";
+			while ($row = $result->fetch_assoc()) {
+				$title = $row["title"];
+				$docid = $row["document_pk"];
+				$publisher = $row["publisher"];
+				echo
+					"<tr>",
+					"<td><b>$title</b></td>",
+					"<td>$docid</td>",
+					"<td>$publisher</td>";
+					
+					#$result = $conn->query(
+					$sql =
+						"select copy_number "
+					.	"from document_copy "
+					.	"where base_document = $docid "
+					.	"and copy_number in ("
+					.		"select doc_copy "
+					.		"from loan "
+					.		"where borrower = '$uname' "
+					.		"and return_date is null)";
+					$result = $conn->query($sql);
+					if($result != False && $result != NULL && $result->num_rows != 0){
+						$copy_number = $result->fetch_assoc()["copy_number"];
+		?>
+					<td>Holding</td>
+					<td><form method="get" action="return.php">
+						<input type="submit" value="Return"/>
+						<input type="hidden" name="copy_number" value=<?php echo "$copy_number"; ?>>
+					</form></td>
+		<?php
+				}else{
+					$result = $conn->query(
+						"select count(*) copies_free "
+					.	"from document_copy "
+					.	"where base_document = $docid "
+					.	"and copy_number not in ("
+					.		"select doc_copy "
+					.		"from loan "
+					.		"where return_date is null)");
+					$copies_free = intval($result->fetch_assoc()["copies_free"]);
+					echo "<td>$copies_free Available</td>";
+					if($copies_free > 0){
+		?>
+						<td><form method="get" action="checkout.php">
+							<input type="submit" value="Checkout"/>
+							<input type="hidden" name="document_pk" value=<?php echo "$docid"; ?>>
+						</form></td>
+		<?php
+		
+					}else{
+						echo "<td></td>";
+					}
+				}
+				echo "</tr>";
+			}
+			echo "</table>";
+		?>
+	</body>
 </html>
